@@ -1,25 +1,39 @@
 version: 2.1
 
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - main
+
+
+
+# Define the jobs we want to run for this project
 jobs:
   build:
-    working_directory: ~/circleci-python
+    working_directory: ~/ExampleApplication
     docker:
-      - image: "circleci/python:3.6.4"
+      - image: circleci/node:latest
     steps:
       - checkout
-      - run: python3 main.py
-  test:
-    working_directory: ~/circleci-python
-    docker:
-      - image: "circleci/python:3.6.4"
-    steps:
-      -checkout
-      - run: python3 main-test.py
+      - run: 
+          name: update-npm
+          command: 'sudo npm install -g npm@8.1.4'
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: install-npm
+          command: npm install       
+      - run:
+          name: test-run
+          command: npm run test
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+    
 
-workflows:
-  build_and_test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
