@@ -10,9 +10,6 @@ workflows:
               only:
                 - main
 
-
-
-# Define the jobs we want to run for this project
 jobs:
   build:
     working_directory: ~/ExampleApplication
@@ -21,19 +18,26 @@ jobs:
     steps:
       - checkout
       - run: 
-          name: update-npm
+          name: Update npm
           command: 'sudo npm install -g npm@8.1.4'
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: install-npm
+          name: Install dependencies
           command: npm install       
       - run:
-          name: test-run
+          name: Run tests
           command: npm run test
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - ./node_modules
-    
-
+      - run:
+          name: Install Snyk
+          command: npm install -g snyk
+      - run:
+          name: Authenticate Snyk
+          command: snyk auth $SNYK_TOKEN
+      - run:
+          name: Run Snyk Security Scan
+          command: snyk test --severity-threshold=high
