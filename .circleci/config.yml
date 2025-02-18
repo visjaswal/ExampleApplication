@@ -17,14 +17,17 @@ jobs:
       - image: circleci/node:latest
     steps:
       - checkout
-      - run: 
-          name: Update npm
-          command: 'npm install -g npm@8.1.4 --unsafe-perm=true'
+      - run:
+          name: Update npm (Locally)
+          command: npm install npm@8.1.4 --prefix=~/npm
+      - run:
+          name: Add npm to PATH
+          command: echo 'export PATH=~/npm/bin:$PATH' >> $BASH_ENV
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Install dependencies
-          command: npm install       
+          command: npm install
       - run:
           name: Run tests
           command: npm run test
