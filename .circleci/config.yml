@@ -19,7 +19,7 @@ jobs:
       - checkout
       - run: 
           name: Update npm
-          command: 'sudo npm install -g npm@8.1.4'
+          command: 'npm install -g npm@8.1.4 --unsafe-perm=true'
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
@@ -33,11 +33,11 @@ jobs:
           paths:
             - ./node_modules
       - run:
-          name: Install Snyk
-          command: npm install -g snyk
+          name: Install Snyk (Locally)
+          command: npm install snyk --save-dev
       - run:
           name: Authenticate Snyk
-          command: snyk auth $SNYK_TOKEN
+          command: npx snyk auth $SNYK_TOKEN
       - run:
           name: Run Snyk Security Scan
-          command: snyk test --severity-threshold=high
+          command: npx snyk test --severity-threshold=high
