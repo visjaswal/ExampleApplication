@@ -17,12 +17,6 @@ jobs:
       - image: circleci/node:latest
     steps:
       - checkout
-      - run:
-          name: Update npm (Locally)
-          command: npm install npm@8.1.4 --prefix=~/npm
-      - run:
-          name: Add npm to PATH
-          command: echo 'export PATH=~/npm/bin:$PATH' >> $BASH_ENV
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
@@ -39,8 +33,5 @@ jobs:
           name: Install Snyk (Locally)
           command: npm install snyk --save-dev
       - run:
-          name: Authenticate Snyk
-          command: npx snyk auth $SNYK_TOKEN
-      - run:
           name: Run Snyk Security Scan
-          command: npx snyk test --severity-threshold=high
+          command: SNYK_TOKEN=$SNYK_TOKEN npx snyk test --severity-threshold=high
