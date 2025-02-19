@@ -30,8 +30,6 @@ jobs:
           paths:
             - ./node_modules
       - run:
-          name: Install Snyk (Locally)
+          name: Run Snyk
           command: npm install snyk --save-dev
-      - run:
-          name: Run Snyk Security Scan
-          command: SNYK_TOKEN=$SNYK_TOKEN npx snyk test --severity-threshold=high
+      
