@@ -24,7 +24,7 @@ jobs:
   build:
     working_directory: ~/ExampleApplication
     docker:
-      - image: circleci/node:10.6.3
+      - image: circleci/node:latest
     steps:
       - checkout
       - run: 
@@ -44,7 +44,7 @@ jobs:
             - ./node_modules
   deploy:
     docker:
-      - image: circleci/node:10.6.3
+      - image: circleci/node:latest
     steps:
       - run:
           name: deploy-application
