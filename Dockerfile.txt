@@ -1,19 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM circleci/node:latest
-
 ENV NODE_ENV=production
-
-# Set working directory
-WORKDIR /app
-
-# Copy dependencies first
-COPY package.json package-lock.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the app
+COPY ["package.json", "package-lock.json*", "./"]
+RUN sudo npm install
 COPY . .
-
-# Start the application
 CMD ["npm", "start"]
